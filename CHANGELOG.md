@@ -1,3 +1,7 @@
+## [0.2.6] - 2019-11-11
+
+* Allow multipart sms sending
+
 ## [0.2.5] - 2019-03-17
 
 * Add way to remove one message at a time.

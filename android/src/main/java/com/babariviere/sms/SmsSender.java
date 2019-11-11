@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.UUID;
+import java.util.ArrayList;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -77,23 +78,6 @@ class SmsSenderMethodHandler implements RequestPermissionsResultListener {
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private void sendSmsMessage() {
-        Intent sentIntent = new Intent("SMS_SENT");
-        sentIntent.putExtra("sentId", sentId);
-        PendingIntent sentPendingIntent = PendingIntent.getBroadcast(
-                registrar.context(),
-                0,
-                sentIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-        );
-
-        Intent deliveredIntent = new Intent("SMS_DELIVERED");
-        deliveredIntent.putExtra("sentId", sentId);
-        PendingIntent deliveredPendingIntent = PendingIntent.getBroadcast(
-                registrar.context(),
-                UUID.randomUUID().hashCode(),
-                deliveredIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-        );
         SmsManager sms;
         if (this.subId == null) {
             sms = SmsManager.getDefault();
@@ -105,7 +89,34 @@ class SmsSenderMethodHandler implements RequestPermissionsResultListener {
                 return;
             }
         }
-        sms.sendTextMessage(address, null, body, sentPendingIntent, deliveredPendingIntent);
+        ArrayList<String> parts = sms.divideMessage(body);
+        ArrayList<PendingIntent> sentIntents = new ArrayList();
+        ArrayList<PendingIntent> deliveredIntents = new ArrayList();
+
+        for (String part : parts) {
+            Intent sentIntent = new Intent("SMS_SENT");
+            sentIntent.putExtra("sentId", sentId);
+            PendingIntent sentPendingIntent = PendingIntent.getBroadcast(
+                    registrar.context(),
+                    0,
+                    sentIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+             );
+
+            sentIntents.add(sentPendingIntent);
+
+            Intent deliveredIntent = new Intent("SMS_DELIVERED");
+            deliveredIntent.putExtra("sentId", sentId);
+            PendingIntent deliveredPendingIntent = PendingIntent.getBroadcast(
+                    registrar.context(),
+                    UUID.randomUUID().hashCode(),
+                    deliveredIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+             );
+            deliveredIntents.add(deliveredPendingIntent);
+        }
+        sms.sendMultipartTextMessage(address, null, parts, sentIntents, deliveredIntents);
+        // sms.sendTextMessage(address, null, body, sentPendingIntent, sentPendingIntent);
         result.success(null);
     }
 }
