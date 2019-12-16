@@ -1,6 +1,6 @@
 name: sms_maintained
 description: SMS library for Flutter applications. Its allow to send, receive, query sms messages, sms delivery and query contacts info. It exposes an easy and friendly API for developing a completely functional sms app in Flutter.
-version: 0.2.5
+version: 0.2.6
 author: "geordyvancutsem <geordyvc@gmail.com>"
 homepage: "https://github.com/geordyvcErasmus/flutter_sms"
 repository: "https://github.com/geordyvcErasmus/flutter_sms"
