@@ -3,7 +3,7 @@
 @implementation SmsPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
   FlutterMethodChannel* channel = [FlutterMethodChannel
-      methodChannelWithName:@"sms"
+      methodChannelWithName:@"sms_maintained"
             binaryMessenger:[registrar messenger]];
   SmsPlugin* instance = [[SmsPlugin alloc] init];
   [registrar addMethodCallDelegate:instance channel:channel];
