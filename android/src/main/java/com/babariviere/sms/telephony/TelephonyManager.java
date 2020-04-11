@@ -22,7 +22,16 @@ public class TelephonyManager {
     }
 
     public String getSimId(int slotId) {
-        return this.getManager().getDeviceId(slotId);
+        String imei ="";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+             imei = this.getManager().getImei(slotId);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+             imei = this.getManager().getDeviceId(slotId);
+        }
+        else{
+            imei = this.getManager().getDeviceId();
+        }
+        return imei;
     }
 
 
@@ -41,11 +50,7 @@ public class TelephonyManager {
             if (result != null) {
                 return (int)result;
             }
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (NoSuchMethodException|IllegalAccessException|InvocationTargetException e) {
             e.printStackTrace();
         }
 
