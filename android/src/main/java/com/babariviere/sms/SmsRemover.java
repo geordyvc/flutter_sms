@@ -47,7 +47,6 @@ public class SmsRemover implements PluginRegistry.RequestPermissionsResultListen
 			Log.e(TAG, "deleteSms: " + fromAddress, e);
 			return false;
 		}
-		return true;
 	}
 
 	@Override
