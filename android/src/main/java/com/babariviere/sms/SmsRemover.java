@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.Log;
-
+import android.database.Cursor;
 import com.babariviere.sms.permisions.Permissions;
 
 import io.flutter.plugin.common.EventChannel;
