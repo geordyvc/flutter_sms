@@ -63,7 +63,7 @@ public class SmsRemover implements PluginRegistry.RequestPermissionsResultListen
 
 	@Override
 	public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-		if (requestCode != Permissions.READ_SMS_ID_REQ) {
+		if (requestCode != Permissions.READ_SMS) {
 			return false;
 		}
 		boolean isOk = true;
