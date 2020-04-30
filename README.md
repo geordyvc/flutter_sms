@@ -4,7 +4,7 @@ Took over from previous owner because [the old repo](https://github.com/babarivi
 
 ## Reason I took over
 
-I am making an SMS app (that will be open source when it is more stable) and I need a good package for all the CRUD actions that I need to do with my messages. 
+I am making an SMS app (that will be open source when it is more stable) and I need a good package for all the CRUD actions that I need to do with my messages.
 
 # Flutter SMS
 
@@ -28,20 +28,19 @@ For help on editing plugin code, view the [documentation](https://flutter.io/pla
 Once you're familiar with Flutter you may install this package adding `sms_maintained` (0.2.5 or higher) to the dependencies list of the `pubspec.yaml` file as follow:
 
 ```yaml
-...
+---
 dependencies:
   flutter:
     sdk: flutter
 
   sms_maintained: ^0.2.5
-...
 ```
 
 Then run the command `flutter packages get` on the console.
 
 ## Querying SMS messages
 
-Add the import statement for `sms_maintained` and create an instance of the *SmsQuery* class:
+Add the import statement for `sms_maintained` and create an instance of the _SmsQuery_ class:
 
 ```dart
 import 'package:sms_maintained/sms.dart';
@@ -56,7 +55,7 @@ void main() {
 
 ```dart
 List<SmsMessage> messages = await query.getAllSms;
-``` 
+```
 
 **Note**: _the use of `await` keyword means that `getAllSms` is resolved asynchronously and a Future is retorned. To use await, you must be in a function marked `async`._
 
@@ -88,7 +87,7 @@ List<SmsThread> threads = await query.getAllThreads;
 
 ## Getting the Contact info
 
-Each conversation thread is related with a Contact. 
+Each conversation thread is related with a Contact.
 The class `Contact` contains all the info of a thread contact (address, photo, full name).
 To get access to `Contact` class you must import `'package:sms_maintained/contact.dart'` into your dart file:
 
@@ -174,6 +173,7 @@ void main() {
   sender.sendSms(message);
 }
 ```
+
 Some times it is useful to be notified of delivered messages regardless of the message. To do that you must subscribe to the `onSmsDelivered` of the `SmsSender` class instance:
 
 ```dart
@@ -218,13 +218,12 @@ void main() {
 Only deleting one by one is available. Don't forget to make your sms app the default sms app.
 [blogpost guide](https://android-developers.googleblog.com/2013/10/getting-your-sms-apps-ready-for-kitkat.html)
 
-
 ```dart
 import 'package:sms_maintained/sms.dart';
 
 void main() {
 SmsRemover smsRemover = SmsRemover();
-<boolean value> = await smsRemover.removeSmsById(sms.id, _smsThread.threadId);
+<boolean value> = await smsRemover.removeSms(fromAddress);
 }
 ```
 
