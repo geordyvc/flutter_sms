@@ -19,7 +19,7 @@ public class SmsRemover implements PluginRegistry.RequestPermissionsResultListen
 	private final PluginRegistry.Registrar registrar;
 	private final Permissions permissions;
 
-	private final String[] permissionsList = new String[] { Manifest.permission.READ_SMS, Manifest.permission.WRITE_SMS,
+	private final String[] permissionsList = new String[] { Manifest.permission.READ_SMS,
 			Manifest.permission.READ_PHONE_STATE };
 
 	SmsRemover(PluginRegistry.Registrar registrar) {
