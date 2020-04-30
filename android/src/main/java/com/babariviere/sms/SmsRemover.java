@@ -53,7 +53,7 @@ public class SmsRemover implements PluginRegistry.RequestPermissionsResultListen
 	public void onMethodCall(MethodCall methodCall, MethodChannel.Result result) {
 		switch (methodCall.method) {
 			case "removeSms":
-				if (methodCall.hasArgument("id")) {
+				if (methodCall.hasArgument("fromAddress")) {
 					Log.i("SMSREMOVER", "method called for removing sms: " + methodCall.argument("fromAddress"));
 					result.success(this.deleteSms(methodCall.argument("fromAddress").toString()));
 				}
