@@ -49,9 +49,9 @@ public class SmsRemover implements PluginRegistry.RequestPermissionsResultListen
 					long threadId = c.getLong(1);
 					String address = c.getString(2);
 					String date = c.getString(3);
-					Log.e("log>>>", "0--->" + c.getString(0) + "1---->" + c.getString(1) + "2---->" + c.getString(2)
+					Log.d("log>>>", "0--->" + c.getString(0) + "1---->" + c.getString(1) + "2---->" + c.getString(2)
 							+ "3--->" + c.getString(3) + "4----->" + c.getString(4));
-					Log.e("log>>>", "date" + c.getString(0));
+					Log.d("log>>>", "date" + c.getString(0));
 
 					ContentValues values = new ContentValues();
 					values.put("read", true);
@@ -61,7 +61,7 @@ public class SmsRemover implements PluginRegistry.RequestPermissionsResultListen
 						// mLogger.logInfo("Deleting SMS with id: " + threadId);
 						context.getContentResolver().delete(Uri.parse("content://sms/" + id), "date=?",
 								new String[] { c.getString(4) });
-						Log.e("log>>>", "Delete success.........");
+						Log.d("log>>>", "Delete success.........");
 					}
 				} while (c.moveToNext());
 			}
