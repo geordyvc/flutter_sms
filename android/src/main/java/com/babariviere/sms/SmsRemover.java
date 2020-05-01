@@ -16,63 +16,90 @@ import io.flutter.plugin.common.PluginRegistry;
 import static android.content.ContentValues.TAG;
 
 public class SmsRemover implements PluginRegistry.RequestPermissionsResultListener, MethodChannel.MethodCallHandler {
-	private final PluginRegistry.Registrar registrar;
-	private final Permissions permissions;
+    private final PluginRegistry.Registrar registrar;
+    private final Permissions permissions;
 
-	private final String[] permissionsList = new String[] { Manifest.permission.READ_SMS,
-			Manifest.permission.READ_PHONE_STATE };
+    private final String[] permissionsList = new String[] { Manifest.permission.READ_SMS,
+            Manifest.permission.READ_PHONE_STATE };
 
-	SmsRemover(PluginRegistry.Registrar registrar) {
-		this.registrar = registrar;
-		this.permissions = new Permissions(registrar.activity());
-		registrar.addRequestPermissionsResultListener(this);
-	}
+    SmsRemover(PluginRegistry.Registrar registrar) {
+        this.registrar = registrar;
+        this.permissions = new Permissions(registrar.activity());
+        registrar.addRequestPermissionsResultListener(this);
+    }
 
-	void handle(Permissions permissions, String fromAddress) {
-		if (permissions.checkAndRequestPermission(permissionsList, Permissions.SEND_SMS_ID_REQ)) {
-			deleteSms(fromAddress);
-		}
-	}
+    void handle(Permissions permissions, String fromAddress) {
+        if (permissions.checkAndRequestPermission(permissionsList, Permissions.SEND_SMS_ID_REQ)) {
+            deleteSms(fromAddress);
+        }
+    }
 
-	private boolean deleteSms(String fromAddress) {
-		Context context = registrar.context();
-		boolean isDeleted = false;
-		try {
-			context.getContentResolver().delete(Uri.parse("content://sms/"), null, null);
-			isDeleted = true;
-		} catch (Exception ex) {
-			isDeleted = false;
-		}
-		return isDeleted;
-	}
+    private boolean deleteSms(String fromAddress) {
+        Context context = registrar.context();
+        boolean isDeleted = false;
+        try {
+            Uri uriSms = Uri.parse("content://sms/inbox");
+            Cursor c = context.getContentResolver().query(uriSms,
+                    new String[] { "_id", "thread_id", "address", "person", "date", "body" }, "read=0", null, null);
 
-	@Override
-	public void onMethodCall(MethodCall methodCall, MethodChannel.Result result) {
-		switch (methodCall.method) {
-			case "removeSms":
-				if (methodCall.hasArgument("fromAddress")) {
-					Log.i("SMSREMOVER", "method called for removing sms: " + methodCall.argument("fromAddress"));
-					handle(this.permissions, methodCall.argument("fromAddress").toString());
-				}
-		}
+            if (c != null && c.moveToFirst()) {
+                do {
+                    long id = c.getLong(0);
+                    long threadId = c.getLong(1);
+                    String address = c.getString(2);
+                    String body = c.getString(5);
+                    String date = c.getString(3);
+                    Log.e("log>>>", "0--->" + c.getString(0) + "1---->" + c.getString(1) + "2---->" + c.getString(2)
+                            + "3--->" + c.getString(3) + "4----->" + c.getString(4) + "5---->" + c.getString(5));
+                    Log.e("log>>>", "date" + c.getString(0));
 
-	}
+                    ContentValues values = new ContentValues();
+                    values.put("read", true);
+                    getContentResolver().update(Uri.parse("content://sms/"), values, "_id=" + id, null);
 
-	@Override
-	public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-		if (requestCode != Permissions.READ_SMS_ID_REQ) {
-			return false;
-		}
-		boolean isOk = true;
-		for (int res : grantResults) {
-			if (res != PackageManager.PERMISSION_GRANTED) {
-				isOk = false;
-				break;
-			}
-		}
-		if (isOk) {
-			return true;
-		}
-		return false;
-	}
+                    if (address.equals(fromAddress)) {
+                        // mLogger.logInfo("Deleting SMS with id: " + threadId);
+                        context.getContentResolver().delete(Uri.parse("content://sms/" + id), "date=?",
+                                new String[] { c.getString(4) });
+                        Log.e("log>>>", "Delete success.........");
+                    }
+                } while (c.moveToNext());
+            }
+            isDeleted = true;
+        } catch (Exception e) {
+            isDeleted = false;
+            Log.e("log>>>", e.toString());
+        }
+        return isDeleted;
+    }
+
+    @Override
+    public void onMethodCall(MethodCall methodCall, MethodChannel.Result result) {
+        switch (methodCall.method) {
+            case "removeSms":
+                if (methodCall.hasArgument("fromAddress")) {
+                    Log.i("SMSREMOVER", "method called for removing sms: " + methodCall.argument("fromAddress"));
+                    handle(this.permissions, methodCall.argument("fromAddress").toString());
+                }
+        }
+
+    }
+
+    @Override
+    public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode != Permissions.READ_SMS_ID_REQ) {
+            return false;
+        }
+        boolean isOk = true;
+        for (int res : grantResults) {
+            if (res != PackageManager.PERMISSION_GRANTED) {
+                isOk = false;
+                break;
+            }
+        }
+        if (isOk) {
+            return true;
+        }
+        return false;
+    }
 }
