@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 
+import androidx.annotation.RequiresApi;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -21,7 +23,10 @@ public class TelephonyManager {
         return this.getManager().getPhoneCount();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public String getSimId(int slotId) {
+
+
         return this.getManager().getDeviceId(slotId);
     }
 
